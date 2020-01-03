@@ -13,8 +13,8 @@ const addNewGameCards = async gameId => {
       cards.push(new CardModel({ value: i, gameId: gameId }).save());
     }
     const newCards = await Promise.all(cards);
-    // const sortedCards = _.shuffle(newCards).map(i => i._id);
-    const sortedCards = newCards.map(i => i._id);
+    const sortedCards = _.shuffle(newCards).map(i => i._id);
+    // const sortedCards = newCards.map(i => i._id);
     return sortedCards;
   } catch (err) {
     throw err;

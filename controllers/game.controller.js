@@ -114,7 +114,10 @@ const selectCard = async (req, res) => {
       if (cardsObjects.length === game.cards.length) {
         game.isCompleted = true;
         game.status = "win";
-        await game.save();
+        await Promise.all([
+          game.populate(["cards"]).execPopulate(),
+          game.save()
+        ]);
         return res.status(200).json({
           message: "You WIN",
           game
@@ -134,7 +137,7 @@ const selectCard = async (req, res) => {
       // Game is lost
       game.isCompleted = true;
       game.status = "lost";
-      await game.save();
+      await Promise.all([game.populate(["cards"]).execPopulate(), game.save()]);
       res.status(200).json({
         message: "You LOOSE",
         game
