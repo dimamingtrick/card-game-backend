@@ -27,7 +27,17 @@ const startGame = async (req, res) => {
   const cards = await CardService.addNewGameCards(game._id);
 
   game.cards = cards;
-  await game.save();
+  await Promise.all([
+    game.save(),
+    game
+      .populate([
+        {
+          path: "cards",
+          select: "-value"
+        }
+      ])
+      .execPopulate()
+  ]);
 
   res.send(game);
 };

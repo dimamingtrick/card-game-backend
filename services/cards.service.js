@@ -62,7 +62,7 @@ const checkCorrectCardsPosition = (selectedCards, gameCards) => {
   for (let i = 1; i <= selectedCards.length; i++) {
     if (
       selectedCards[i - 1].value !== i ||
-      !selectedCards[i - 1]._id.equals(gameCards[i - 1])
+      !gameCards.find(c => c.toString() === selectedCards[i - 1]._id.toString())
     ) {
       correctCardsPosition = false;
       break;
