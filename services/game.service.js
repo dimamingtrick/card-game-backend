@@ -1,4 +1,5 @@
 const { GameModel, CardModel } = require("../models");
+const { ErrorResponse } = require("../helpers");
 
 /**
  * Get all games from database
@@ -84,10 +85,24 @@ const getGameAndCards = async (gameId, cards) => {
   }
 };
 
+/**
+ * Delete game by id
+ */
+const deleteGame = async gameId => {
+  return new Promise((resolve, reject) => {
+    GameModel.findOneAndRemove({ _id: gameId }, (err, deletedGame) => {
+      if (err) return reject(err);
+      if (!deleteGame) return reject(new ErrorResponse("Game wasn't found", 404));
+      if (deletedGame && !err) return resolve(deletedGame);
+    });
+  });
+};
+
 module.exports = {
   getAllGames,
   addNewGame,
   getFullGameData,
   getGameData,
-  getGameAndCards
+  getGameAndCards,
+  deleteGame
 };

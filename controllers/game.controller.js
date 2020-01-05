@@ -212,6 +212,28 @@ const takePrise = async (req, res) => {
   }
 };
 
+/**
+ * DELETE /game/:id
+ */
+const deleteGame = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!id) {
+      throw new ErrorResponse("Send valid id", 400);
+    }
+
+    await GameService.deleteGame(id);
+    res.json({ message: "Game was successfully deleted", gameId: id });
+
+    const io = req.app.get("socketio");
+    io.emit("gameWasDeleted", id);
+  } catch (err) {
+    console.log(err);
+    res.status(err.status || 400).json(err.message || "Bad request");
+  }
+};
+
 module.exports = {
   index,
   create,
@@ -219,5 +241,6 @@ module.exports = {
   startGame,
   getFullGameData,
   selectCard,
-  takePrise
+  takePrise,
+  deleteGame
 };

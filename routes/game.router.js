@@ -13,6 +13,8 @@ router.get("/start-game", GameController.startGame);
 
 router.get("/:id", GameController.getFullGameData);
 
+router.delete("/:id", GameController.deleteGame);
+
 router.post("/:id/select-card", GameController.selectCard);
 
 router.get("/:id/take-prise", GameController.takePrise);
