@@ -11,6 +11,9 @@ const cors = require("cors");
 const gameRoutes = require("./routes/game.router");
 
 const app = express();
+const server = require('http').Server(app);
+const io = require('socket.io')(server);
+
 const PORT = process.env.PORT || 8080;
 const DB_URL = process.env.DB_URL || "mongodb://localhost:27017/card-games";
 const hbs = exphbs.create({
@@ -22,9 +25,13 @@ app.engine("hbs", hbs.engine);
 app.set("view engine", "hbs");
 app.set("views", "views");
 
+// add socketio object to every request object
+app.set("socketio", io);
+
+app.use(cors());
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(cors());
 
 app.use("/game", gameRoutes);
 
@@ -44,8 +51,13 @@ async function start() {
       useUnifiedTopology: true
     });
 
-    app.listen(PORT, () => {
+    server.listen(PORT, () => {
       console.log(`Server has been started on ${PORT} port`);
+
+      io.on('connection', socket => {
+        app.set("socket", socket);
+        console.log('a user connected');
+      });
     });
   } catch (err) {
     console.error(`Error: ${err.message}`);

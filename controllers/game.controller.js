@@ -20,6 +20,18 @@ const create = (req, res) => {
 };
 
 /**
+ * GET "/game/all-games"
+ */
+const getAllGames = async (req, res) => {
+  try {
+    const games = await GameService.getAllGames();
+    res.json(games);
+  } catch (err) {
+    res.status(404).json("Games not found");
+  }
+};
+
+/**
  * GET "/game/start-game"
  */
 const startGame = async (req, res) => {
@@ -40,6 +52,9 @@ const startGame = async (req, res) => {
   ]);
 
   res.send(game);
+
+  const io = req.app.get("socketio");
+  io.emit("gamesChange", game);
 };
 
 /**
@@ -160,9 +175,9 @@ const selectCard = async (req, res) => {
 };
 
 /**
- * POST "/game/:id/complete"
+ * GET "/game/:id/take-prise"
  */
-const completeGame = async (req, res) => {
+const takePrise = async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -200,8 +215,9 @@ const completeGame = async (req, res) => {
 module.exports = {
   index,
   create,
+  getAllGames,
   startGame,
   getFullGameData,
   selectCard,
-  completeGame
+  takePrise
 };

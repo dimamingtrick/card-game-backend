@@ -1,6 +1,24 @@
 const { GameModel, CardModel } = require("../models");
 
 /**
+ * Get all games from database
+ */
+const getAllGames = async () => {
+  try {
+    const games = await GameModel.find({})
+      .sort({ createdAt: -1 })
+      .populate(["selectedCards"]);
+
+    if (games) {
+      return games;
+    }
+    throw new Error("No Games Found");
+  } catch (err) {
+    throw err;
+  }
+};
+
+/**
  * Add game to database
  */
 const addNewGame = async () => {
@@ -67,6 +85,7 @@ const getGameAndCards = async (gameId, cards) => {
 };
 
 module.exports = {
+  getAllGames,
   addNewGame,
   getFullGameData,
   getGameData,
