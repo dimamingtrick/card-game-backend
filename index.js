@@ -56,7 +56,6 @@ async function start() {
 
       io.on('connection', socket => {
         app.set("socket", socket);
-        console.log('a user connected');
       });
     });
   } catch (err) {
