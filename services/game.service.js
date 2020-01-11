@@ -88,14 +88,25 @@ const getGameAndCards = async (gameId, cards) => {
 /**
  * Delete game by id
  */
-const deleteGame = async gameId => {
-  return new Promise((resolve, reject) => {
-    GameModel.findOneAndRemove({ _id: gameId }, (err, deletedGame) => {
-      if (err) return reject(err);
-      if (!deleteGame) return reject(new ErrorResponse("Game wasn't found", 404));
-      if (deletedGame && !err) return resolve(deletedGame);
-    });
-  });
+const deleteGame = gameId => {
+  return Promise.all([
+    new Promise((resolve, reject) => {
+      GameModel.findOneAndRemove({ _id: gameId }, (err, deletedGame) => {
+        if (err) return reject(err);
+        if (!deleteGame) return reject(new ErrorResponse("Game wasn't found", 404));
+        if (deletedGame && !err) return resolve(deletedGame);
+      });
+    }),
+    new Promise((resolve, reject) => {
+      CardModel.deleteMany({ gameId }, (err, deletedCards) => {
+        console.log('err', err);
+        console.log('deleted cards', deletedCards);
+        if (err) return reject(err);
+        if (!deletedCards) return reject(new ErrorResponse("Cads were not found", 400));
+        if (deletedCards && !err) return resolve(deletedCards);
+      })
+    })
+  ]);
 };
 
 module.exports = {
